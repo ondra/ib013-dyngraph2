@@ -5,10 +5,10 @@
 	edges_test/1,
 	domecek/1,
 
-	% manipulace s 'events' (seznam termu add(Time, Hrana), del(Time, Hrana)
-	quadruples_to_events/2,
-	split_events/4,
-	events_to_edges/2,
+%	% manipulace s 'events' (seznam termu add(Time, Hrana), del(Time, Hrana)
+%	quadruples_to_events/2,
+%	split_events/4,
+%	events_to_edges/2,
 
 	% tabulky
 	table_lookup/3,
@@ -20,7 +20,7 @@
 	connected/1,
 	edges_to_ugraph/2,
 	ugraph_to_edges/2,
-	count_degrees/3,
+	count_degree/3,
 	components/2,
 
 	% operace nad seznamy
@@ -162,11 +162,11 @@ table_update([K-_ | T], K, NV, [K-NV | T]) :- !.
 table_update([H | T], K, NV, [H | NT]) :-
 	table_update(T, K, NV, NT).
 
-% vertices(+InitEdges, +Seq, -VerticeList)
+% vertices(+InitEdges, +PackedSeq, -VerticeList)
 % Pro zadany seznam hran a posloupnost udalosti (jedno z toho muze byt prazdne)
 % vrati seznam unikatnich vrcholu.
 vertices(InitEdges, Seq, VerticeList) :-
-	seq_strip_times(Seq, SeqEdges),
+	seq_edges(Seq, SeqEdges),
 	append(InitEdges, SeqEdges, UnsortedEdges),
 	break_edges(UnsortedEdges, UnsortedVertices),
 	remove_dups(UnsortedVertices, VerticeList).
@@ -174,11 +174,15 @@ vertices(InitEdges, Seq, VerticeList) :-
 break_edges([], []).
 break_edges([A-B | T], [A, B | NT]) :- break_edges(T,NT).
 
-seq_strip_times([],[]).
-seq_strip_times([add(A-B, _) | T], [A-B | NT]) :- seq_strip_times(T, NT).
-seq_strip_times([del(A-B, _) | T], [A-B | NT]) :- seq_strip_times(T, NT).
+seq_edges([], []).
+seq_edges([ev(_, Add, Del) | T], Result) :-
+	append(Add, Del, Edges1),
+	seq_edges(T, Edges2),
+	append(Edges1, Edges2, Result).
 
-%%% po nahrani na web %%%
+%seq_strip_times([],[]).
+%seq_strip_times([add(A-B, _) | T], [A-B | NT]) :- seq_strip_times(T, NT).
+%seq_strip_times([del(A-B, _) | T], [A-B | NT]) :- seq_strip_times(T, NT).
 
 % prevede seznam hran na ugraph tak jak je popsany v library(ugraphs)
 edges_to_ugraph(Edges, Ugraph) :-
@@ -194,22 +198,6 @@ desymmetrify([], []).
 desymmetrify([X-Y|Tail], [X-Y|NTail]) :-
 	delete(Tail, Y-X, Tail1),
 	desymmetrify(Tail1, NTail).
-
-%symmetrify(Edges, SymmEdges) :-
-%	symm(Edges, E),
-%	remove_dups(E, SymmEdges).
-%
-%symm([],[]).
-%symm([X-Y | T], [X-Y, Y-X | NT]) :-
-%	symm(T, NT).
-
-% count_degrees(+Vertices, +Edges, -DegreeTable)
-% Pro dany seznam vrcholu a seznam hran spocita stupne vrcholu
-% do tabulky [vrchol-stupen].
-count_degrees([], _, []).
-count_degrees([V|T], Edges, [V-Num | NT]) :- 
-	count_degree(V, Edges, Num),
-	count_degrees(T, Edges, NT).
 
 count_degree(_, [], 0).
 count_degree(V, [X-Y | T], N) :-
