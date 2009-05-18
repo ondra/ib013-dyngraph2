@@ -1,3 +1,14 @@
+/*
+ *
+ * Resitele: Ondrej Herman (xherman),
+ *           Martin Milata (xmilata)
+ *   Zadani: 19. Dynamicky graf II
+ *   Prolog: SICStus Prolog 4.0.2
+ *
+ * max_degree.pl - uzel s nejvice spojenimi
+ *
+ */
+
 :- module(max_degree, [max_degree/2, max_degree/3, max_degree/4]).
 
 :- use_module(library(lists)).

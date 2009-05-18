@@ -1,3 +1,14 @@
+/*
+ *
+ * Resitele: Ondrej Herman (xherman),
+ *           Martin Milata (xmilata)
+ *   Zadani: 19. Dynamicky graf II
+ *   Prolog: SICStus Prolog 4.0.2
+ *
+ * cycles.pl - pocet cyklu
+ *
+ */
+
 :- module(cycles, [cycles/2, cycles/3, cycles/4]).
 
 :- use_module(library(lists)).

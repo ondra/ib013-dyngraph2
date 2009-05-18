@@ -1,3 +1,14 @@
+/*
+ *
+ * Resitele: Ondrej Herman (xherman),
+ *           Martin Milata (xmilata)
+ *   Zadani: 19. Dynamicky graf II
+ *   Prolog: SICStus Prolog 4.0.2
+ *
+ * spanning_tree.pl - minimalni kostra/les grafu
+ *
+ */
+
 :- module(spanning_tree, [spanning_tree/3]).
 
 :- use_module(util).

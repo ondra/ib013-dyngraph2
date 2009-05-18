@@ -1,3 +1,14 @@
+/*
+ *
+ * Resitele: Ondrej Herman (xherman),
+ *           Martin Milata (xmilata)
+ *   Zadani: 19. Dynamicky graf II
+ *   Prolog: SICStus Prolog 4.0.2
+ *
+ * util.pl - pomocne predikaty pouzivane v ostatnich souborech
+ *
+ */
+
 :- module(util, [
 	% testovaci vstupy
 	test_input/1,

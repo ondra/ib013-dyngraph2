@@ -1,3 +1,14 @@
+/*
+ *
+ * Resitele: Ondrej Herman (xherman),
+ *           Martin Milata (xmilata)
+ *   Zadani: 19. Dynamicky graf II
+ *   Prolog: SICStus Prolog 4.0.2
+ *
+ * eulerian.pl - da se graf nakreslit jednim tahem?
+ *
+ */
+
 :- module(eulerian, [eulerian/1, eulerian/2, eulerian/3]).
 
 :- use_module(util).

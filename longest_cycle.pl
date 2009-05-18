@@ -1,3 +1,14 @@
+/*
+ *
+ * Resitele: Ondrej Herman (xherman),
+ *           Martin Milata (xmilata)
+ *   Zadani: 19. Dynamicky graf II
+ *   Prolog: SICStus Prolog 4.0.2
+ *
+ * longest_cycle.pl - nejdelsi cyklus
+ *
+ */
+
 :- module(longest_cycle, [longest_cycle/2, longest_cycle/3, longest_cycle/4]).
 
 :- use_module(util).

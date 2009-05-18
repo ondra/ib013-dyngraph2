@@ -1,3 +1,14 @@
+/*
+ *
+ * Resitele: Ondrej Herman (xherman),
+ *           Martin Milata (xmilata)
+ *   Zadani: 19. Dynamicky graf II
+ *   Prolog: SICStus Prolog 4.0.2
+ *
+ * max_subgraph.pl - nejvetsi souvisly podgraf
+ *
+ */
+
 :- module(max_subgraph, [max_subgraph/2, max_subgraph/3, max_subgraph/4]).
 
 :- use_module(util).
