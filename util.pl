@@ -33,6 +33,7 @@
 	ugraph_to_edges/2,
 	count_degree/3,
 	components/2,
+	desymmetrify/2,
 
 	% operace nad seznamy
 	filter/3,
@@ -207,8 +208,10 @@ ugraph_to_edges(Ugraph, Edges) :-
 
 desymmetrify([], []).
 desymmetrify([X-Y|Tail], [X-Y|NTail]) :-
-	delete(Tail, Y-X, Tail1),
-	desymmetrify(Tail1, NTail).
+	X @> Y,
+	desymmetrify(Tail, NTail), !.
+desymmetrify([_|Tail], NTail) :- 
+	desymmetrify(Tail, NTail), !.
 
 count_degree(_, [], 0).
 count_degree(V, [X-Y | T], N) :-
