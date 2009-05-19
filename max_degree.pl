@@ -19,7 +19,8 @@ max_degree(G, Time, V) :-
 	quadruples_to_packedevents(G, Seq),
 	split_packedevents(Seq, Time, Events, _),
 	packedevents_to_edges(Events, InitEdges),
-	max_degree_edges(InitEdges, V-_D).
+	max_degree_edges(InitEdges, V-D),
+	D > 0.
 
 %interval
 max_degree(G, Start, End, V) :-
@@ -39,7 +40,7 @@ max_degree(G, V) :-
 % InitEdges - hrany ktere uz v grafu jsou
 % Seq - sekvence pridani/odebrani hran
 % MaxVertice - vrchol s maximalnim stupnem
-max_degree_seq(_, [], Acc, Acc).
+max_degree_seq(_, [], V-D, V-D) :- D > 0.
 max_degree_seq(Edges, [Event|Tail], AccV-AccD, MaxVertice) :-
 	apply_packedevent_to_edges(Edges, Event, NewEdges),
 	max_degree_edges(NewEdges, Vertice-Degree),
