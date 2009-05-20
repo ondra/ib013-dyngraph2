@@ -33,9 +33,7 @@ zbytek tohoto projektu.
 
 \subsection*{Popis řešení}
 
-Projekt se skládá z několika modulů umístěných ve stejnojmenných souborech.
-(možná nějaký popis budoucího rozhraní, které využívá algoritmy z ostatních
-modulů)
+Projekt se skládá z několika modulů:
 
 \subsubsection*{Uživatelské rozhraní}
 Modul \texttt{frontend} obsahuje sadu snadno použitelných predikátů
