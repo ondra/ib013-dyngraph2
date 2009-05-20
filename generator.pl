@@ -36,7 +36,7 @@ events_to_quadruples(Events, Quadruples) :-
         make_quadruples(SortedEvents, Quadruples).
 
 make_quadruples([],[]).
-make_quadruples([add(X-Y, TC), del(X-Y, TD)|Events], [[X,Y,TC,TD]|Quadruples]) :-
+make_quadruples([add(X-Y, TC), del(X-Y, TD)|Events], [[X-Y,TC,TD]|Quadruples]) :-
         make_quadruples(Events, Quadruples).
 
 random_graph(NVertices, NGraphs, Time, Stride, EdgeProbability, Quadruples) :-
