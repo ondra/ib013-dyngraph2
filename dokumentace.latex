@@ -37,7 +37,59 @@ Projekt se skládá z několika modulů umístěných ve stejnojmenných soubore
 (možná nějaký popis budoucího rozhraní, které využívá algoritmy z ostatních
 modulů)
 
-\subsubsection*{Frontend} \ldots nebo tak něco
+\subsubsection*{Uživatelské rozhraní}
+Modul \texttt{frontend} obsahuje sadu snadno použitelných predikátů
+zapouzdřujících většinu funkcionality ostatních modulů:
+
+\begin{itemize}
+\item \texttt{graph\_load}/1 \\
+Načte graf ze souboru. Argument je unifikován se jménem vstupního souboru.
+
+\item \texttt{graph\_store}/1 \\
+Uloží právě používaný graf do souboru jména určeného argumentem.
+
+\item \texttt{graph\_random}/4 \\
+Vytvoří náhodný dynamický graf pomocí modulu \texttt{generator}. Například
+\texttt{graph\_random(10, 5, 10, 0.2).} vytvoří dynamický graf na deseti
+ vrcholech přecházením mezi pěti náhodnými grafy, které mají pravděpodobnost existence každé hrany 0.2, jeden přechod přitom trvá deset času.
+
+\item \texttt{set\_time}/2 \\
+Nastaví omezení predikátů na časový interval, kde argumenty predikátu jsou jeho krajní body.
+
+\item \texttt{clear\_time}/0 \\
+Zruší omezení predikátů na časový interval.
+
+\item \texttt{show}/0 \\
+Zobrazí aktuálně používaný seznam hran a časový interval.
+
+\item \texttt{clean}/0 \\
+Obnoví čistý stav programu.
+
+\item \texttt{cycles}/0 \\
+Nalezne maximální počet cyklů.
+
+\item \texttt{eulerian}/0 \\
+Zjistí, je-li graf vždy eulerovský.
+
+\item \texttt{longest\_cycle}/0 \\
+Nalezne nejdelší cyklus grafu.
+
+\item \texttt{max\_degree}/0 \\
+Nalezne vrchol s nejvyšším počtem spojení.
+
+\item \texttt{max\_subgraph}/0 \\
+Nalezne maximální souvislý podgraf grafu.
+
+\item \texttt{spanning\_tree}/1 \\
+Vypíše kostru grafu v okamžiku určeném argumentem. Tento predikát není ovlivněn \texttt{set\_time} a \texttt{clear\_time}.
+
+\item \texttt{path}/2 \\
+Nalezne nejrychlejší cestu z vrcholu určeného prvním argumentem do vrcholu určeného druhým argumentem, existuje-li.
+
+\item \texttt{sssp}/1 \\
+Nalezne seznam nejrychlejších cest do všech vrcholů dosažitelných z kořene určeného argumentem, tvaru \texttt{vrchol-předchůdce/čas}.
+
+\end{itemize}
 
 \subsubsection*{Util}
 Tento modul obsahuje pomocné funkce, které jsou dostatečně obecné na to, aby se
@@ -118,16 +170,12 @@ komponenty. Komponenty (podgrafy) porovnáváme podle počtu vrcholů, pokud se
 rovnají, porovnáváme počet hran.
 
 \subsubsection*{Path}
-Tento modul obsahuje algoritmy pro nalezení nejkratší cesty mezi dvěma vrcholy a nejkratších cest z vybraného vrcholu do všech ostatních. Použitý algoritmus se podobá Dijkstrovu - protože seznam vstupních událostí je seřazen podle času, není nutné druhé a další navštívení vrcholu uvažovat. Cesty však nemusí vznikat v pořadí, proto je třeba při prvním navštívení vrcholu navštívit i všechny jeho následníky.
+Tento modul obsahuje algoritmy pro nalezení nejkratší cesty mezi dvěma vrcholy a nejkratších cest z vybraného vrcholu do všech ostatních. Použitý algoritmus se podobá Dijkstrovu - protože seznam vstupních událostí je seřazen podle času, není nutné druhé a další navštívení vrcholu uvažovat. Cesty však nemusí vznikat v pořadí, proto je třeba při prvním navštívení vrcholu navštívit i všechny jeho nenavštívené následníky.
 
 \subsubsection*{Spanning\_tree}
 Hledání (minimální) kostry grafu. Vzhledem k tomu, že bez bližšího upřesnění
 nedává hledání kostry na dynamickém grafu smysl, funguje pouze pro zadaný
 okamžik v čase. Pokud není graf spojitý, je nalezen minimální les grafu.
-
-\subsection*{Manuál}
-
-Tato sekce asi vyžaduje něco jako to uživatelské rozhraní.
 
 \subsection*{Použité cizí predikáty}
 
