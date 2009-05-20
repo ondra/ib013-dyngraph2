@@ -11,7 +11,7 @@
 
 :- module(generator, [
 	random_events/6,
-	random_graph/6,
+	random_graph/6
 ]).
 
 :- use_module(util).
