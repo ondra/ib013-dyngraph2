@@ -1,0 +1,168 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[czech]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{tikz}
+\usetikzlibrary{shapes}
+\usepackage{dot2texi}
+
+
+\author{Ondřej Herman, Martin Milata}
+\title{Dynamický graf II. -- písemná zpráva}
+\date{3.4.2009}
+
+\begin{document}
+
+\maketitle
+\pagestyle{plain}
+
+\subsection*{Zadání}
+
+Graf je reprezentován množinou čtveřic charakterizujících spojení dvou uzlů
+(neorientované hrany): zdroj, cíl, časové razítko, trvání (stačí v minutách).
+Každý uzel může být v daném časovém okamžiku spojen s libovolným počtem dalších
+uzlů. Prohledávejte takovýto graf.  Najděte největší souvislý graf pro daný
+časový okamžik, pro daný časový interval, pro libovolný časový okamžik, uzly s
+nejvíce spojeními, nejdelšími spojeními a podobně.  Součástí projektu je
+generátor korektních dat (nesmí existovat dvě různé čtveřice, které by
+popisovaly spojení dvou stejných uzlů ve stejném časovém okamžiku, např.
+[a,b,200810012208,10],[a,b,200810012214,3],[b,a,200810012206,5]).
+
+\subsection*{Vstup}
+
+Vstupem programu je seznam čtveřic typu ({\it vrchol-vrchol, čas vzniku, čas zániku}). Časové značky jsou bez ztráty na obecnosti reprezentovány celočíselným datovým typem. Jsme si vědomi toho, že použití seznamů pro reprezentaci uspořádaných {\it n}-tic je zavrženíhodná praxe, pro použití v této zprávě však postačí. Uvažujme tento graf:
+\\
+\begin{dot2tex}[neato,fdp]
+graph G {
+	edge [lblstyle="scale=0.5", labeldistance=0.1];
+	a -- b [label = "0-2"];
+	a -- e [label = "1-7"];
+	
+	b -- c [label = "0-2"]; 
+	c -- d [label = "2-3"];
+	c -- e [label = "1-3"];
+	b -- d [label = "0-4"];
+	d -- e [label = "1-4"];
+	b -- e [label = "1-2"];
+
+	a -- x [label = "3-6"];
+
+	x -- y [label = "6-7"];
+	y -- z [label = "6-8"];
+	z -- x [label = "7-8"];
+}
+\end{dot2tex}
+
+Vstup programu popisující graf je pak seznam:
+
+\begin{verbatim}
+G = [[a--b, 0, 2], [a--e, 1, 7], [b--c, 0, 2], [c--d, 2, 3],
+     [c--e, 1, 3], [b--d, 0, 4], [d--e, 1, 4], [b--e, 1, 2],
+     [a--x, 3, 6], [x--y, 6, 7], [y--z, 6, 8], [z--x, 7, 8]]
+\end{verbatim}
+\subsection*{Operace}
+
+Program podporuje následující operace nad zadaným grafem:
+\begin{description}
+\item[Největší souvislý podgraf] Najde největší souvislý podgraf pro daný časový
+okamžik, časový interval nebo libovolný okamžik. Příklad:
+\begin{verbatim}
+?- max_subgraph(G, 2).
+A = [b--c, c--d, c--e, b--d, d--e, b--e]
+
+?- max_subgraph(A, 4, 5).
+A = [e--f]
+
+?- max_subgraph(A).
+A = [a--b, b--c, a--c, c--d]
+\end{verbatim}
+
+\item[Uzel s nejvíce spojeními] Najde uzly s největším množstvím hran pro daný
+okamžik/interval/libovolný okamžik.
+\begin{verbatim}
+?- max_degree(G, 2, V).
+V = b
+
+?- max_degree(G, 4, 5, V).
+V = a
+
+?- max_degree(G, V).
+V = b
+
+\end{verbatim}
+
+\item[Minimální kostra (les) grafu] Najde kostru grafu (nebo les, v případě, že
+graf není souvislý) pro daný časový okamžik.
+\begin{verbatim}
+?- spanning_tree(G, 7, T).
+T = [[a--e], [x--y, y--z]]
+\end{verbatim}
+
+\item[Cesta v grafu] Najde cestu mezi zadanými dvěma vrcholy, pokud taková
+existuje. Opět buď pro daný okamžik, interval nebo libovolný okamžik. Cesta může vznikat postupně.
+\begin{verbatim}
+?- path(G, a, z, 2, W).
+no
+
+?- path(G, a, z, 4, 9, W).
+W = [[a--x, 4], [x--y, 6], [x--z, 6]]
+
+?- path(G, a, d, W).
+W = [[a--b, 0], [b--d, 0]]
+
+\end{verbatim}
+
+
+\item[Nejdelší cyklus] Najde nejdelší cyklus.
+\begin{verbatim}
+?- longest_cycle(G, 7, C).
+C = [x--y, y--z, z--x]
+
+?- longest_cycle(G, 4, 5, C).
+no
+
+?- longest_cycle(G, C).
+C = [a--b, b--c, c--d, d--e, e--a]
+
+\end{verbatim}
+
+
+\item[Planarita] Rozhodne, zda je graf rovinný.
+\begin{verbatim}
+?- planar(G, 2).
+no
+
+?- planar(G, 4, 5).
+yes
+
+?- planar(G).
+no
+\end{verbatim}
+
+\item[Počet cyklů] Určí počet cyklů.
+\begin{verbatim}
+?- cycles(G, 5, N).
+N = 0
+
+?- cycles(G, 5, 7, N).
+N = 1
+
+?- cycles(G, N).
+N = 9
+
+\end{verbatim}
+
+\item[Eulerovskost] Rozhodne, zda-li je graf eulerovský, tj. zda-li se dá
+nakreslit jedním tahem.
+\begin{verbatim}
+?- eulerian(G, 2).
+yes
+
+?- eulerian(G, 4, 5).
+yes
+
+?- eulerian(G).
+no
+\end{verbatim}
+
+\end{description}
+\end{document}

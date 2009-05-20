@@ -1,0 +1,119 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[czech]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{tikz}
+\usetikzlibrary{shapes}
+%\usepackage{dot2texi}
+
+
+\author{Ondřej Herman, Martin Milata}
+\title{Dynamický graf II. -- dokumentace k programu}
+\date{20.5.2009}
+
+\begin{document}
+
+\maketitle
+\pagestyle{plain}
+
+\section*{Zadání}
+
+\paragraph{Zadání projektu}
+Graf je reprezentován množinou čtveřic cha\-ra\-kte\-ri\-zu\-jí\-cích spojení
+dvou uzlů (neorientované hrany): zdroj, cíl, časové razítko, trvání (stačí v
+minutách).  Každý uzel může být v daném časovém okamžiku spojen s libovolným
+počtem dalších uzlů. Prohledávejte takovýto graf.  Najděte největší souvislý
+graf pro daný časový okamžik, pro daný časový interval, pro libovolný časový
+okamžik, uzly s nejvíce spojeními, nejdelšími spojeními a podobně.  Součástí
+projektu je generátor korektních dat (nesmí existovat dvě různé čtveřice, které
+by popisovaly spojení dvou stejných uzlů ve stejném časovém okamžiku, např.
+[a,b,200810012208,10],[a,b,200810012214,3],[b,a,20\-08\-10\-01\-2206,5]).
+
+\paragraph{Odchylky od zadání}
+Rozhodli jsme se neimplementovat test rovinnosti grafu, který je uveden v
+písemné zprávě. Důvodem je to, že implementace některého z efektivních algoritmů
+realizujících tento test by pravděpodobně byla rozsáhlá přibližně stejně jako
+zbytek tohoto projektu.
+
+\subsection*{Popis řešení}
+
+Projekt se skládá z několika modulů umístěných ve stejnojmenných souborech.
+(možná nějaký popis budoucího rozhraní, které využívá algoritmy z ostatních
+modulů)
+
+\subsubsection*{Interface} \ldots nebo tak něco
+
+\subsubsection*{Util}
+Tento modul obsahuje pomocné funkce, které jsou dostatečně obecné na to, aby se
+daly využít ve více modulech implementujících nějaký algoritmus. Jedná se
+zejména o predikáty pro převod mezi různými reprezentacemi grafu a práci s nimi.
+Graf je možné reprezentovat několika způsoby, podle toho, který je v dané
+situaci vhodný.
+
+\begin{description}
+	\item[Seznam čtveřic] -- respektive seznamů o délce čtyři, kde první dvě
+	položky udávají koncové vrcholy hrany, třetí čas jejího vzniku a čtvrtá
+	čas jejího zániku. Tato reprezentace je použita pro vstup (viz písemná
+	zpráva).
+
+	\item[Seznam událostí] Seznam termů, obsahujících časové razítko, seznam
+	přidaných hran a seznam odebraných hran. Časové razítko určuje okamžik,
+	ve kterém byly tyto hrany přidány/odebrány. Termy jsou seřazeny podle
+	času. Tato reprezentace je vhodná pro algoritmy, které pracují přímo s
+	dynamickým grafem.
+
+	\item[Seznam hran] Statický graf reprezentovaný seznamem hran ve tvaru
+	\texttt{a-b}. Používané algoritmy pracujícími nad statickým grafem,
+	obvykle rekurzivně nad seznamem hran.
+
+	\item[Ugraph] Reprezentace používaná standardní knihovnou
+	\texttt{ugraphs}. Seznam dvojic \texttt{vrchol-seznam\_sousedu}. Tato
+	reprezentace je potřebná pro využití predikátů poskytnutých výše
+	zmíněnou knihovnou.
+\end{description}
+
+\subsubsection*{Generator}
+
+% ---- %
+
+\subsubsection*{Cycles}
+Zjištění maximálního počtu cyklů v zadaném okamžiku nebo časovém intervalu. Je
+implementováno jako procházení do hloubky každého (statického) grafu v sekvenci
+grafů, které existují v zadaném časovém intervalu.  Prohledávání do hloubky
+(dále DFS) je spuštěno z nějakého vrcholu grafu, pokud po nějaké cestě dosáhne
+vrcholu ze kterého je spuštěno je započítán cyklus a pokračuje dále, dokud
+neprojde všechny dosažitelné vrcholy. Protože hledáme v neorientovaném grafu, je
+každý cyklus nalezen dvakrát (oba ,,směry`` projití tohoto cyklu jsou započítány
+jako cyklus) a tedy je nutno výsledek vydělit dvěma. Nakonec zjistíme, zda-li
+byly navštíveny všechny vrcholy aktuálního grafu. Pokud tomu tak není, znamená
+to, že graf není spojitý a musíme DFS spustit znova z nějakého vrcholu, který
+předtím nebyl navštíven, což opakujeme dokud jsme nenavštívili všechny vrcholy
+(opakování se provede tolikrát, kolik je v grafu komponent).
+
+\subsubsection*{Eulerian}
+Test na ,,eulerovskost`` grafu, tedy zda-li se dá graf nakreslit jedním tahem
+(tak, abychom se vrátili do stejného vrcholu, ze kterého jsme začali). Je možno
+testovat graf v určitém časovém okamžiku, nebo zda-li si graf tuto vlastnost
+udržuje v nějakém časovém intervalu.
+
+Tato vlastnost je ekvivalentní tomu, že je graf spojitý a každý vrchol má sudý
+stupeň. Stačí tedy v každém statickém grafu v sekvenci grafů indukované %wtf indeed
+dynamickým grafem zjistit jeho spojitost a sudost všecho jeho vrcholů.
+
+\subsubsection*{Longest\_cycle}
+
+\subsubsection*{Max\_degree}
+
+\subsubsection*{Max\_subgraph}
+
+\subsubsection*{Path}
+
+\subsubsection*{Spanning\_tree}
+
+\subsection*{Manuál}
+
+\subsection*{Použité cizí predikáty}
+V projektu jsou využity predikáty z knihoven SICStus prologu \texttt{lists},
+\texttt{random}, \texttt{samsort} a \texttt{ugraphs}. Všechny ostatní predikáty
+jsou naší vlastní prací.
+
+\end{document}
