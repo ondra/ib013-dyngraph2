@@ -19,6 +19,7 @@
 :- use_module(library(ugraphs)).
 :- use_module(library(samsort)).
 
+% porovna 'events' podle vrcholu a pote podle casu
 event_comp(E1, E2) :-
         arg(1, E1, C1),
         arg(1, E2, C2),
@@ -31,6 +32,7 @@ event_comp(E1, E2) :-
 	)
 	.
 
+% seznam vyvazenych events na ctverice
 events_to_quadruples(Events, Quadruples) :-
         samsort(event_comp, Events, SortedEvents),
         make_quadruples(SortedEvents, Quadruples).
@@ -39,10 +41,12 @@ make_quadruples([],[]).
 make_quadruples([add(X-Y, TC), del(X-Y, TD)|Events], [[X-Y,TC,TD]|Quadruples]) :-
         make_quadruples(Events, Quadruples).
 
+% generuje nahodny dynamicky graf na NVertices vrcholech
 random_graph(NVertices, NGraphs, Time, Stride, EdgeProbability, Quadruples) :-
 	random_events(NVertices, NGraphs, Time, Stride, EdgeProbability, Events),
 	events_to_quadruples(Events, Quadruples).
 
+% generuje nahodne vyvazene events
 random_events(NVertices, NGraphs, Time, Stride, EdgeProbability, Events) :-
 	random_ugraph_chain(NVertices, NGraphs, EdgeProbability, Graphs),
 	append([[]|Graphs], [[]], Chain),
@@ -59,7 +63,7 @@ gen_events([G1,G2|Graphs], NumVertices, Time, Stride, Accum, Events) :- !,
 	append(Del, Accum2, Accum3),
 	gen_events([G2|Graphs], NumVertices, EndTime, Stride, Accum3, Events), !.
 
-
+% generuje retezec nahodnych grafu
 random_ugraph_chain(_, 0, _, []) :- !.
 random_ugraph_chain(NumVertices, NumGraphs, EdgeProbability, [G|Graphs]) :-
 	random_ugraph(EdgeProbability, NumVertices, GAsym),
@@ -67,12 +71,16 @@ random_ugraph_chain(NumVertices, NumGraphs, EdgeProbability, [G|Graphs]) :-
 	N is NumGraphs - 1, !,
 	random_ugraph_chain(NumVertices, N, EdgeProbability, Graphs).
 	
+% vypocita seznam hran, ktere je nutne vytvorit a odstranit pro prechod
+% od G1 k G2
 ugraph_diff_to_modification(G1, G2, NumVertices, Add, Del) :-
 	ugraph_diff(G1, G2, GDel),
 	ugraph_diff(G2, G1, GAdd),
 	ugraph_to_edges(GDel, Del),
 	ugraph_to_edges(GAdd, Add), !.
 	
+
+% pomocne predikaty pro prirazeni casu events
 add_times(A, StartTime, EndTime, Out) :- add_times(A, StartTime, EndTime, [], Out).
 add_times([], _, _, Accum, Accum).
 add_times([A|TA], StartTime, EndTime, Accum, Out) :-
