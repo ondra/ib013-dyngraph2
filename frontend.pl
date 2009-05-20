@@ -119,7 +119,7 @@ eulerian :-
 	(cur_time(F, T) ->
 		eulerian(G, F, T);
 		eulerian(G)
-	), !.
+	), nl, !.
 
 
 longest_cycle :-
