@@ -36,6 +36,7 @@
 :- use_module(max_subgraph).
 :- use_module(spanning_tree).
 :- use_module(path).
+:- use_module(library(lists)).
 
 :- dynamic cur_time/2.
 :- dynamic cur_graph/1.
