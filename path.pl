@@ -5,7 +5,7 @@
  *   Zadani: 19. Dynamicky graf II
  *   Prolog: SICStus Prolog 4.0.2
  *
- * spanning_tree.pl - minimalni kostra/les grafu
+ * path.pl - cesta mezi vrcholy, sssp
  *
  */
 
@@ -24,12 +24,12 @@ reached(V) :- reached(V, _, _).
 
 
 dijkstra(G, Vertex, StartTime, EndTime) :-
-	dijkstra_init(G, Vertex, StartTime, EndTime, Events),
-	dijkstra_processevents(Events).
+	dijkstra_init(G, Vertex, StartTime, EndTime, Events, InitEdges),
+	dijkstra_processevents(Events, InitEdges).
 
 dijkstra(G, Vertex) :- !,
 	dijkstra_init(G, Vertex, Events),
-	dijkstra_processevents(Events).
+	dijkstra_processevents(Events, []).
 
 	
 dijkstra_init(G, Vertex, Events) :- !,
@@ -37,7 +37,7 @@ dijkstra_init(G, Vertex, Events) :- !,
 	assert(reached(Vertex, [], 0)).
 
 	
-dijkstra_init(G, Vertex, StartTime, EndTime, Events) :-
+dijkstra_init(G, Vertex, StartTime, EndTime, Events, InitEdges) :-
 	quadruples_to_packedevents(G, Seq), !,
 	split_packedevents(Seq, StartTime, Pre, Post),
 	split_packedevents(Post, EndTime, Events, _),
@@ -45,29 +45,32 @@ dijkstra_init(G, Vertex, StartTime, EndTime, Events) :-
 	mark_paths([Vertex], InitEdges, [], StartTime).
 
 
-dijkstra_processevents([]).
-dijkstra_processevents([Event|Events]) :-
-	dijkstra_step(Event),
-	dijkstra_processevents(Events).
+dijkstra_processevents([], _).
+dijkstra_processevents([Event|Events], CurEdges) :-
+	apply_packedevent_to_edges(CurEdges, Event, NewEdges),
+	dijkstra_step(Event, NewEdges),
+	dijkstra_processevents(Events, NewEdges).
 
 	
-dijkstra_step(ev(Time, AddEdges, DelEdges)) :- 
-	dijkstra_processedges(Time, AddEdges).	
+dijkstra_step(ev(Time, AddEdges, DelEdges), Edges) :- 
+	dijkstra_processedges(Time, AddEdges, Edges).
 
 
-dijkstra_processedges(_, []) :- !.
-dijkstra_processedges(Time, [A-B|Edges]) :-
+dijkstra_processedges(_, [], _) :- !.
+dijkstra_processedges(Time, [A-B|AddEdges], Edges) :- !,
 	(
-	reached(A),
-	assert(reached(B, A, Time)), !
+		reached(A),
+		assert(reached(B, A, Time)),
+		mark_paths([B], Edges, A, Time), !
 	;
-	reached(B),
-	assert(reached(A, B, Time)), !
+		reached(B),
+		assert(reached(A, B, Time)),
+		mark_paths([A], Edges, B, Time), !
 	;
-	true
+		true
 	),
-	! ,
-	dijkstra_processedges(Time, Edges)
+	!,
+	dijkstra_processedges(Time, AddEdges, Edges)
 	.
 
 
@@ -107,23 +110,24 @@ sssp(G, Source, StartTime, EndTime, Paths) :-
 
 path(G, Source, Dest, Path) :-
 	dijkstra_init(G, Source, Events),
-	path_processevents(Events, Dest),
+	path_processevents(Events, Dest, []),
 	construct_path(Dest, Path),
 	dijkstra_cleanup, !.
 
 
 path(G, Source, Dest, StartTime, EndTime, Path) :-
-	dijkstra_init(G, Source, StartTime, EndTime, Events),
-	path_processevents(Events, Dest),	
+	dijkstra_init(G, Source, StartTime, EndTime, Events, Edges),
+	path_processevents(Events, Dest, Edges),	
 	construct_path(Dest, Path),
 	dijkstra_cleanup, !.
 
 
-path_processevents([], _) :- !.
-path_processevents([Event|Events], Dest) :-
-	dijkstra_step(Event),
+path_processevents([], _, _) :- !.
+path_processevents([Event|Events], Dest, Edges) :-
+	apply_packedevent_to_edges(Edges, Event, NewEdges),
+	dijkstra_step(Event, NewEdges),
 	(reached(Dest) ->
 		true;
-		path_processevents(Events, Dest)
+		path_processevents(Events, Dest, NewEdges)
 	), !.
 
