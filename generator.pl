@@ -5,7 +5,7 @@
  *   Zadani: 19. Dynamicky graf II
  *   Prolog: SICStus Prolog 4.0.2
  *
- * spanning_tree.pl - minimalni kostra/les grafu
+ * generator.pl - generator nahodnych dynamickych grafu
  *
  */
 
