@@ -158,9 +158,10 @@ spanning_tree(Time) :-
 path(Source, Dest) :-
 	initialized, cur_graph(G),
 	(cur_time(F, T) ->
-		path(G, Source, Dest, F, T, Path);
-		path(G, Source, Dest, Path)
+		path(G, Source, Dest, F, T, Path_B);
+		path(G, Source, Dest, Path_B)
 	),
+	reverse(Path_B, Path),
 	write('Shortest path is '), write(Path), nl, !.
 
 sssp(Source) :-
