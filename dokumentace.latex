@@ -6,7 +6,7 @@
 %\usepackage{dot2texi}
 
 
-\author{Ondřej Herman, Martin Milata}
+\author{Ondřej Herman (xherman1), Martin Milata (xmilata)}
 \title{Dynamický graf II. -- dokumentace k programu}
 \date{20.5.2009}
 
@@ -73,8 +73,6 @@ situaci vhodný.
 
 \subsubsection*{Generator}
 
-% ---- %
-
 \subsubsection*{Cycles}
 Zjištění maximálního počtu cyklů v zadaném okamžiku nebo časovém intervalu. Je
 implementováno jako procházení do hloubky každého (statického) grafu v sekvenci
@@ -100,20 +98,43 @@ stupeň. Stačí tedy v každém statickém grafu v sekvenci grafů indukované 
 dynamickým grafem zjistit jeho spojitost a sudost všecho jeho vrcholů.
 
 \subsubsection*{Longest\_cycle}
+Nalezení nejdelšího cyklu v zadaném okamžiku nebo časovém intervalu.
+Implementace je velmi podobná predikátu \texttt{cycles} -- provádí se
+prohledávání grafů do hloubky, s tím rozdílem, že se nepočítá celkový počet
+cyklů, ale hledá se ten nejdelší.
 
 \subsubsection*{Max\_degree}
+Nalezení vrcholu s největším stupněm (největším počtem spojení) v nějakém
+okamžiku nebo intervalu.  Algoritmus pro každý statický graf indukovaný
+dynamickým grafem určí stupeň s nejvyšším stupněm a z nich pak vybere maximální.
+
+Pokud zadaný (dynamický) graf neobsahuje po celou dobu ani jeden vrchol,
+predikát selže -- dotaz na vrchol s nejvyšším stupněm v takovém případě nedává
+smysl.
 
 \subsubsection*{Max\_subgraph}
+Nalezne největší souvislý podgraf v čase/intervalu. Je implementováno jako
+rozklad na souvislé komponenty každého statického grafu a výběr té největší
+komponenty. Komponenty (podgrafy) porovnáváme podle počtu vrcholů, pokud se
+rovnají, porovnáváme počet hran.
 
 \subsubsection*{Path}
 
 \subsubsection*{Spanning\_tree}
+Hledání (minimální) kostry grafu. Vzhledem k tomu, že bez bližšího upřesnění
+nedává hledání kostry na dynamickém grafu smysl, funguje pouze pro zadaný
+okamžik v čase. Pokud není graf spojitý, je nalezen minimální les grafu.
 
 \subsection*{Manuál}
 
+Tato sekce asi vyžaduje něco jako to uživatelské rozhraní.
+
 \subsection*{Použité cizí predikáty}
-V projektu jsou využity predikáty z knihoven SICStus prologu \texttt{lists},
-\texttt{random}, \texttt{samsort} a \texttt{ugraphs}. Všechny ostatní predikáty
-jsou naší vlastní prací.
+
+V projektu jsou využity predikáty z knihoven SICStus prologu \texttt{lists}
+(práce se seznamy), \texttt{random} (generátor náhodných čísel),
+\texttt{samsort} (obecný predikát pro řazení termů) a \texttt{ugraphs}
+(predikáty pro práci s neohodnocenými grafy). Všechny ostatní predikáty jsou
+naší vlastní prací.
 
 \end{document}
