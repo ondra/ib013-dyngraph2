@@ -40,13 +40,16 @@
 
 :- dynamic cur_time/2.
 :- dynamic cur_graph/1.
+
 initialized :-
 	cur_graph(_), !
 	;
 	write('No graph loaded.'),
 	nl.
 
+
 timed :- cur_time(_, _).
+
 
 load(Term, File) :-
 	seeing(CurIn),
@@ -54,6 +57,7 @@ load(Term, File) :-
 	read(Term),
 	seen,
 	see(CurIn).
+
 	
 store(Term, File) :-
 	telling(CurOut),
@@ -63,22 +67,28 @@ store(Term, File) :-
 	told,
 	tell(CurOut).
 
+
 clean :-
 	retractall(cur_graph(_)),
 	retractall(cur_time(_,_)).
+
 	
 clear_time :-
 	retractall(cur_time(_,_)).
 
+
 graph_store(File) :-
 	initialized,
 	cur_graph(G),
-	store(G, File).
+	store(G, File), !.
+
 
 graph_load(File) :-
 	clean,
 	load(G, File),
-	assert(cur_graph(G)), !.
+	assert(cur_graph(G)),
+	show, !.
+
 
 graph_random(Size, Steps, Stride, EdgeProbability) :-
 	clean,
@@ -86,24 +96,25 @@ graph_random(Size, Steps, Stride, EdgeProbability) :-
 	assert(cur_graph(G)),
 	show.
 
+
 set_time(F, T) :-
 	retractall(cur_time/2),
 	F =< T,
 	assert(cur_time(F, T)).
 
+
 show :-
 	initialized,
 	cur_graph(G),
-	write('Current graph:'), nl,
+	write('Current graph is'), nl,
 	write(G), nl,
 	length(G, L), write(L), write(' events.'), nl,
 	(cur_time(A, B) -> 
-		write('Current time interval: '),
+		write('Current time interval is '),
 		write(A), write(' to '), write(B), nl
 		;
 		true
 	), flush_output, !.
-
 
 	
 cycles :- 
@@ -141,7 +152,7 @@ max_degree :-
 		max_degree(G, F, T, MaxDegree);
 		max_degree(G, MaxDegree)
 	),
-	write('A vertex with maximal degree is '),
+	write('Vertex of maximal degree is '),
 	write(MaxDegree), write('.'), nl, flush_output, !.
 
 
@@ -153,7 +164,6 @@ max_subgraph :-
 	),
 	write('Maximal complete subgraph is '),
 	write(MaxSubgraph), write('.'), nl, flush_output, !.
-
 
 
 spanning_tree(Time) :-
@@ -176,5 +186,6 @@ sssp(Source) :-
 		sssp(G, Source, F, T, Vert);
 		sssp(G, Source, Vert)
 	),
-	write('Reachability of vertices: '), write(Vert), nl, flush_output, !.
+	write('Reachabile vertices are '), write(Vert),
+	write('.'), nl, flush_output, !.
 
