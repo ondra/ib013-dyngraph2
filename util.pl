@@ -16,10 +16,6 @@
 	edges_test/1,
 	domecek/1,
 
-	% tabulky
-	table_lookup/3,
-	table_update/4,
-
 	% manipulace se seznamy hran
 	vertices/3,
 	edges_neighbors/3, % neighbors kolidovalo s nejakou std funkci
@@ -124,17 +120,6 @@ before(T1, T2) :-
 	arg(2, T2, Val2),
 	Val1 < Val2.
 
-% table_lookup(+Table, +Key, -Value)
-% V tabulce dvojic Table vyhleda hodnotu klice Key.
-table_lookup([K-V|_], K, V) :- !.
-table_lookup([_|T], K, V) :- table_lookup(T,K,V).
-
-% table_update(+Table, +Key, +NewValue, -NewTable).
-% Nahradi hodnotu klice Key hodnotou NewValue a vrati takto zmenenou tabulku.
-table_update([K-_ | T], K, NV, [K-NV | T]) :- !.
-table_update([H | T], K, NV, [H | NT]) :-
-	table_update(T, K, NV, NT).
-
 % vertices(+InitEdges, +PackedSeq, -VerticeList)
 % Pro zadany seznam hran a posloupnost udalosti (jedno z toho muze byt prazdne)
 % vrati seznam unikatnich vrcholu.
@@ -184,7 +169,7 @@ even(Number) :- 0 is Number mod 2.
 
 % connected(+Edges).
 % Uspeje, pokud mnozina hran tvori souvisly graf.
-connected([]).
+connected([]) :- !.
 connected(Edges) :-
 	Edges = [V-_ | _],
 	edges_to_ugraph(Edges, UGraph),
