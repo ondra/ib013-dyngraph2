@@ -14,6 +14,7 @@
 	graph_store/1,
 	graph_random/4,
 	set_time/2,
+	clear_time/0,
 	show/0,
 	cycles/0,
 	clean/0,
@@ -65,6 +66,9 @@ clean :-
 	retractall(cur_graph(_)),
 	retractall(cur_time(_,_)).
 	
+clear_time :-
+	retractall(cur_time(_,_)).
+
 graph_store(File) :-
 	initialized,
 	cur_graph(G),
