@@ -45,7 +45,7 @@ eulerian_edges(Edges) :-
 	%nl, print('trying eulerian on graph '), print(Edges),
 	connected(Edges),
 	vertices(Edges, [], Vertices),
-	count_degrees(Vertices, Edges, Table),
+	count_degree(Vertices, Edges, Table),
 	%trace,
 	even_degrees(Table).
 	%nl, print('eulerian!').
