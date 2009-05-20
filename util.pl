@@ -1,6 +1,6 @@
 /*
  *
- * Resitele: Ondrej Herman (xherman),
+ * Resitele: Ondrej Herman (xherman1),
  *           Martin Milata (xmilata)
  *   Zadani: 19. Dynamicky graf II
  *   Prolog: SICStus Prolog 4.0.2
@@ -15,11 +15,6 @@
 	test_input2/1,
 	edges_test/1,
 	domecek/1,
-
-%	% manipulace s 'events' (seznam termu add(Time, Hrana), del(Time, Hrana)
-%	quadruples_to_events/2,
-%	split_events/4,
-%	events_to_edges/2,
 
 	% tabulky
 	table_lookup/3,
@@ -113,41 +108,6 @@ domecek(G) :-
 		c-b
 	].
 
-% Prevede (serazeny) seznam udalosti na seznam hran, ktery vznikne
-% po provedeni techto udalosti.
-% e.g. events_to_edges([add(a-b,1),add(b-c,2),del(a-b,3)],[b-c]).
-events_to_edges(Events, Result) :- events_to_edges(Events, [], Result).
-events_to_edges([], G, G).
-events_to_edges([add(X-Y, _) | Tail], CurGraph, Result) :-
-	events_to_edges(Tail, [X-Y|CurGraph], Result).
-events_to_edges([del(X-Y, _) | Tail], CurGraph, Result) :-
-	delete(CurGraph, X-Y, NewGraph),
-	events_to_edges(Tail, NewGraph, Result).
-
-% Vezme seznam (serazenych) udalosti a rozdeli je podle hodnoty Time
-% na seznam udalosti co se staly pred Time a co se staly po Time.
-% Pokud se nejaka udalost stane v Time a je to pridani hrany, je
-% to jako by se stala predtim, pokud je to del, je to jako potom.
-split_events([], _, [], []).
-split_events([add(X-Y,Time) | T], Time, [add(X-Y,Time) | NPre], NPost) :-
-	!,
-	split_events(T, Time, NPre, NPost).
-split_events([del(X-Y,Time) | T], Time, NPre, [del(X-Y,Time)|NPost]) :-
-	!,
-	split_events(T, Time, NPre, NPost).
-split_events([Ev|T], Time, [], [Ev,T]) :-
-	arg(2, Ev, EvTime),
-	EvTime > Time,
-	!.
-split_events([H|T], Time, [H|NPre], NPost) :-
-	split_events(T, Time, NPre, NPost).
-
-% Prevede seznam ctveric (tak jak je popsany v predbezne zprave) na
-% serazeny seznam udalosti add(Vrchol-Vrchol, Cas), del(Vrchol-Vrchol, Cas).
-quadruples_to_events(G, Seq) :-
-	to_unsorted_events(G, Events),
-	samsort(before, Events, Seq).
-
 to_unsorted_events([], []).
 to_unsorted_events([[A-B, Start, End] | Tail], [add(A-B, Start), del(A-B, End) | NTail]) :-
 	to_unsorted_events(Tail,NTail).
@@ -193,10 +153,6 @@ seq_edges([ev(_, Add, Del) | T], Result) :-
 	seq_edges(T, Edges2),
 	append(Edges1, Edges2, Result).
 
-%seq_strip_times([],[]).
-%seq_strip_times([add(A-B, _) | T], [A-B | NT]) :- seq_strip_times(T, NT).
-%seq_strip_times([del(A-B, _) | T], [A-B | NT]) :- seq_strip_times(T, NT).
-
 % prevede seznam hran na ugraph tak jak je popsany v library(ugraphs)
 edges_to_ugraph(Edges, Ugraph) :-
 	vertices_edges_to_ugraph([], Edges, Dgraph),
@@ -239,13 +195,6 @@ connected(Edges) :-
 	SortedReachable = SortedVertices.
 
 % filter a partition - delaji to same co v haskellu
-%filter(_, [], []).
-%filter(Pred, [Head | Tail], [Head | Filtered]) :-
-%	call(Pred, Head),
-%	!,
-%	filter(Pred, Tail, Filtered).
-%filter(Pred, [_ | Tail], Filtered) :-
-%	filter(Pred, Tail, Filtered).
 filter(P, L, R) :- include(P, L, R).
 
 partition(_, [], [], []).
@@ -302,11 +251,11 @@ pack_edges(Time, [Head | Tail], AccAddEdges, AccDelEdges, AccRest, AddEdges, Del
 	AccRest1 = [Head | AccRest],
 	pack_edges(Time, Tail, AccAddEdges, AccDelEdges, AccRest1, AddEdges, DelEdges, Rest).
 
-% Dela to same co split_events, ale nad 'packedevents'.
+% Vezme seznam (serazenych) udalosti a rozdeli je podle hodnoty Time
+% na seznam udalosti co se staly pred Time a co se staly po Time.
+% Pokud se nejaka udalost stane v Time a je to pridani hrany, je
+% to jako by se stala predtim, pokud je to del, je to jako potom.
 split_packedevents([], _, [], []).
-%split_packedevents([ev(Time, AddEdges, DelEdges) | T], Time, [ev(Time,AddEdges,[])|NPre], [ev(Time,[],DelEdges)|NPost]) :-
-%	!,
-%	split_packedevents(T, Time, NPre, NPost).
 split_packedevents([Ev|T], Time, [], [Ev|T]) :-
 	arg(1, Ev, EvTime),
 	EvTime > Time,
@@ -321,7 +270,9 @@ apply_packedevent_to_edges(Edges, ev(_Time, AddEdges, DelEdges), NewEdges) :-
 	append(NewGraph1, AddEdges, NewEdges).
 	%nl, nl, print('time: '), print(Time), print(' new graph: '), print(NewEdges).
 
-% Dela to same co events_to_edges, ale nad 'packedevents'.
+% Prevede (serazeny) seznam udalosti na seznam hran, ktery vznikne
+% po provedeni techto udalosti.
+% e.g. events_to_edges([add(a-b,1),add(b-c,2),del(a-b,3)],[b-c]).
 packedevents_to_edges(Events, Result) :- packedevents_to_edges(Events, [], Result).
 packedevents_to_edges([], G, G).
 packedevents_to_edges([Event | Tail], CurGraph, Result) :-

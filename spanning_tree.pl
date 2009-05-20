@@ -1,6 +1,6 @@
 /*
  *
- * Resitele: Ondrej Herman (xherman),
+ * Resitele: Ondrej Herman (xherman1),
  *           Martin Milata (xmilata)
  *   Zadani: 19. Dynamicky graf II
  *   Prolog: SICStus Prolog 4.0.2
