@@ -101,7 +101,7 @@ show :-
 		write(A), write(' to '), write(B), nl
 		;
 		true
-	), !.
+	), flush_output, !.
 
 
 	
@@ -111,7 +111,9 @@ cycles :-
 		cycles(G, F, T, NCycles);
 		cycles(G, NCycles)
 	),
-	write('Graph contains at most '), write(NCycles), write(' cycles.'), nl, !.
+	write('Graph contains at most '),
+	write(NCycles), write(' cycles.'),
+	nl, flush_output, !.
 
 
 eulerian :-
@@ -119,7 +121,7 @@ eulerian :-
 	(cur_time(F, T) ->
 		eulerian(G, F, T);
 		eulerian(G)
-	), nl, !.
+	), nl, flush_output, !.
 
 
 longest_cycle :-
@@ -128,7 +130,8 @@ longest_cycle :-
 		longest_cycle(G, F, T, MaxCycle);
 		longest_cycle(G, MaxCycle)
 	),
-	write('Longest cycle is '), write(MaxCycle), write('.'), nl, !.
+	write('Longest cycle is '), write(MaxCycle), write('.'),
+	nl, flush_output, !.
 
 
 max_degree :-
@@ -137,7 +140,8 @@ max_degree :-
 		max_degree(G, F, T, MaxDegree);
 		max_degree(G, MaxDegree)
 	),
-	write('A vertex with maximal degree is '), write(MaxDegree), write('.'), nl, !.
+	write('A vertex with maximal degree is '),
+	write(MaxDegree), write('.'), nl, flush_output, !.
 
 
 max_subgraph :-
@@ -146,14 +150,15 @@ max_subgraph :-
 		max_subgraph(G, F, T, MaxSubgraph);
 		longest_cycle(G, MaxSubgraph)
 	),
-	write('Maximal complete subgraph is '), write(MaxSubgraph), write('.'), nl, !.
+	write('Maximal complete subgraph is '),
+	write(MaxSubgraph), write('.'), nl, flush_output, !.
 
 
 
 spanning_tree(Time) :-
 	initialized, cur_graph(G),
 	spanning_tree(G, Time, S),
-	write(S), nl, !.
+	write(S), nl, flush_output, !.
 
 path(Source, Dest) :-
 	initialized, cur_graph(G),
@@ -162,7 +167,7 @@ path(Source, Dest) :-
 		path(G, Source, Dest, Path_B)
 	),
 	reverse(Path_B, Path),
-	write('Shortest path is '), write(Path), nl, !.
+	write('Shortest path is '), write(Path), nl, flush_output, !.
 
 sssp(Source) :-
 	initialized, cur_graph(G),
@@ -170,5 +175,5 @@ sssp(Source) :-
 		sssp(G, Source, F, T, Vert);
 		sssp(G, Source, Vert)
 	),
-	write('Reachability of vertices: '), write(Vert), nl, !.
+	write('Reachability of vertices: '), write(Vert), nl, flush_output, !.
 
