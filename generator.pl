@@ -10,13 +10,8 @@
  */
 
 :- module(generator, [
-	add_times/4,
 	random_events/6,
 	random_graph/6,
-	events_to_quadruples/2,
-	event_comp/2,
-	make_quadruples/2,
-	empty_ugraph/2
 ]).
 
 :- use_module(util).
@@ -50,12 +45,11 @@ random_graph(NVertices, NGraphs, Time, Stride, EdgeProbability, Quadruples) :-
 
 random_events(NVertices, NGraphs, Time, Stride, EdgeProbability, Events) :-
 	random_ugraph_chain(NVertices, NGraphs, EdgeProbability, Graphs),
-	empty_ugraph(NVertices, E),
-	append([E|Graphs], [E], Chain),
+	append([[]|Graphs], [[]], Chain),
 	gen_events(Chain, NVertices, Time, Stride, Events), !.
 
 gen_events(G, NumVertices, Time, Stride, Events) :- gen_events(G, NumVertices, Time, Stride, [], Events).
-gen_events([E], NumVertices, _, _, Accum, Accum) :- empty_ugraph(NumVertices,E), !.
+gen_events([[]], NumVertices, _, _, Accum, Accum) :- !.
 gen_events([G1,G2|Graphs], NumVertices, Time, Stride, Accum, Events) :- !,
 	ugraph_diff_to_modification(G1, G2, NumVertices, EAdd, EDel),
 	EndTime is Time + Stride,
@@ -91,7 +85,4 @@ del_times([D|TD], StartTime, EndTime, Accum, Out) :-
 	random(StartTime, EndTime, Time),
 	del_times(TD, StartTime, EndTime, [del(D, Time) | Accum], Out).
 
-empty_ugraph(N, E) :- empty_ugraph(N, E, 0).
-empty_ugraph(N, [], N):-!.
-empty_ugraph(N, [C-[]|G], N1) :- C is N1+1, empty_ugraph(N, G, C), !.
 
