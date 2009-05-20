@@ -1,9 +1,6 @@
 \documentclass[12pt,a4paper]{article}
 \usepackage[czech]{babel}
 \usepackage[utf8]{inputenc}
-\usepackage{tikz}
-\usetikzlibrary{shapes}
-%\usepackage{dot2texi}
 
 
 \author{Ondřej Herman (xherman1), Martin Milata (xmilata)}
@@ -40,7 +37,7 @@ Projekt se skládá z několika modulů umístěných ve stejnojmenných soubore
 (možná nějaký popis budoucího rozhraní, které využívá algoritmy z ostatních
 modulů)
 
-\subsubsection*{Interface} \ldots nebo tak něco
+\subsubsection*{Frontend} \ldots nebo tak něco
 
 \subsubsection*{Util}
 Tento modul obsahuje pomocné funkce, které jsou dostatečně obecné na to, aby se
@@ -72,6 +69,8 @@ situaci vhodný.
 \end{description}
 
 \subsubsection*{Generator}
+Generování náhodného dynamického grafu. Korektnost výstupních dat je zajištěna generováním posloupnosti náhodných grafů pomocí knihovny \texttt{ugraphs}, mezi nimiž jsou spočítány oba rozdíly sousedních grafů posloupnosti. To odpovídá sekvencím operací vložení a odstranění hran pro přechod od jednoho z grafů k druhému. Operace jsou pak opatřeny náhodným časovým razítkem z intervalu příslušejícímu dané dvojici grafů, spojeny s operacemi vytvořenými v ostatních intervalech a převedeny na ,,čtveřice''.
+
 
 \subsubsection*{Cycles}
 Zjištění maximálního počtu cyklů v zadaném okamžiku nebo časovém intervalu. Je
@@ -119,6 +118,7 @@ komponenty. Komponenty (podgrafy) porovnáváme podle počtu vrcholů, pokud se
 rovnají, porovnáváme počet hran.
 
 \subsubsection*{Path}
+Tento modul obsahuje algoritmy pro nalezení nejkratší cesty mezi dvěma vrcholy a nejkratších cest z vybraného vrcholu do všech ostatních. Použitý algoritmus se podobá Dijkstrovu - protože seznam vstupních událostí je seřazen podle času, není nutné druhé a další navštívení vrcholu uvažovat. Cesty však nemusí vznikat v pořadí, proto je třeba při prvním navštívení vrcholu navštívit i všechny jeho následníky.
 
 \subsubsection*{Spanning\_tree}
 Hledání (minimální) kostry grafu. Vzhledem k tomu, že bez bližšího upřesnění
