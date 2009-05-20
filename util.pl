@@ -48,7 +48,8 @@
 
 	% ruzne
 	even/1,
-	max/3
+	max/3,
+	ugraph_diff/3
 ]).
 
 :- use_module(library(lists)).   % ruzne funkce pro seznamy
@@ -380,3 +381,13 @@ merge_component(C1, [C2|T], Result) :-
 		append(C1, C2, NewC),
 		merge_component(NewC, T, Result)
 	).
+
+% odecte B od A
+ugraph_diff(A, B, A_B) :-
+	edges(B, BE),
+	del_edges(A, BE, A_B), !.
+
+
+
+	
+
