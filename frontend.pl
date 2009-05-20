@@ -16,6 +16,7 @@
 	set_time/2,
 	show/0,
 	cycles/0,
+	clean/0,
 	eulerian/0,
 	longest_cycle/0,
 	max_degree/0,
@@ -56,12 +57,13 @@ store(Term, File) :-
 	telling(CurOut),
 	tell(File),
 	write(Term),
+	write('.'),
 	told,
 	tell(CurOut).
 
 clean :-
-	retractall(cur_graph/1),
-	retractall(cur_time/2).
+	retractall(cur_graph(_)),
+	retractall(cur_time(_,_)).
 	
 graph_store(File) :-
 	initialized,

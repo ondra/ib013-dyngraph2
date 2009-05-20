@@ -52,7 +52,7 @@ dijkstra_processevents([Event|Events], CurEdges) :-
 	dijkstra_processevents(Events, NewEdges).
 
 	
-dijkstra_step(ev(Time, AddEdges, DelEdges), Edges) :- 
+dijkstra_step(ev(Time, AddEdges, _DelEdges), Edges) :- 
 	dijkstra_processedges(Time, AddEdges, Edges).
 
 
@@ -86,7 +86,7 @@ mark_paths([Vertex|Vertices], Edges, Through, Time) :-
 	), !.
 
 
-dijkstra_cleanup :- retractall(reached/3).
+dijkstra_cleanup :- retractall(reached(_,_,_)).
 
 
 construct_path([], []).
