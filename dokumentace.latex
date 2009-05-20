@@ -33,11 +33,11 @@ zbytek tohoto projektu.
 
 \subsection*{Popis řešení}
 
-Projekt se skládá z několika modulů:
+Projekt se skládá z následujících modulů:
 
 \subsubsection*{Uživatelské rozhraní}
 Modul \texttt{frontend} obsahuje sadu snadno použitelných predikátů
-zapouzdřujících většinu funkcionality ostatních modulů:
+zapouzdřujících většinu funkcionality ostatních modulů. Po načtení tohoto modulu do interpretu je pro použití všech predikátů nutné inicializovat graf, nad kterým pracují, a to buď ze souboru (\texttt{graph\_load}), nebo vygenerováním náhodného grafu (\texttt{graph\_random}). Predikáty exportované modulem \texttt{frontend} jsou tyto:
 
 \begin{itemize}
 \item \texttt{graph\_load}/1 \\
@@ -52,19 +52,19 @@ Vytvoří náhodný dynamický graf pomocí modulu \texttt{generator}. Napříkl
  vrcholech přecházením mezi pěti náhodnými grafy, které mají pravděpodobnost existence každé hrany 0.2, jeden přechod přitom trvá deset času.
 
 \item \texttt{set\_time}/2 \\
-Nastaví omezení predikátů na časový interval, kde argumenty predikátu jsou jeho krajní body.
+Nastaví omezení predikátů analyzujících graf na časový interval, kde argumenty predikátu jsou jeho krajní body.
 
 \item \texttt{clear\_time}/0 \\
-Zruší omezení predikátů na časový interval.
+Zruší omezení na časový interval.
 
 \item \texttt{show}/0 \\
-Zobrazí aktuálně používaný seznam hran a časový interval.
+Zobrazí aktuálně používaný seznam hran grafu a případné časové omezení.
 
 \item \texttt{clean}/0 \\
 Obnoví čistý stav programu.
 
 \item \texttt{cycles}/0 \\
-Nalezne maximální počet cyklů.
+Nalezne maximální počet cyklů v grafu.
 
 \item \texttt{eulerian}/0 \\
 Zjistí, je-li graf vždy eulerovský.
@@ -88,6 +88,11 @@ Nalezne nejrychlejší cestu z vrcholu určeného prvním argumentem do vrcholu 
 Nalezne seznam nejrychlejších cest do všech vrcholů dosažitelných z kořene určeného argumentem, tvaru \texttt{vrchol-předchůdce/čas}.
 
 \end{itemize}
+
+Ne všechny dostupné predikáty jsou exportovány tímto modulem, například
+predikáty řešící problém v jednom daném okamžiku. Právě načtený graf se
+unifikuje s argumentem predikátu \texttt{cur\_graph} a je ve formátu, který
+tyto funkce akceptují.
 
 \subsubsection*{Util}
 Tento modul obsahuje pomocné funkce, které jsou dostatečně obecné na to, aby se
