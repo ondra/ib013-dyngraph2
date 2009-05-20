@@ -53,7 +53,7 @@ random_events(NVertices, NGraphs, Time, Stride, EdgeProbability, Events) :-
 	gen_events(Chain, NVertices, Time, Stride, Events), !.
 
 gen_events(G, NumVertices, Time, Stride, Events) :- gen_events(G, NumVertices, Time, Stride, [], Events).
-gen_events([[]], NumVertices, _, _, Accum, Accum) :- !.
+gen_events([[]], _NumVertices, _, _, Accum, Accum) :- !.
 gen_events([G1,G2|Graphs], NumVertices, Time, Stride, Accum, Events) :- !,
 	ugraph_diff_to_modification(G1, G2, NumVertices, EAdd, EDel),
 	EndTime is Time + Stride,
@@ -73,7 +73,7 @@ random_ugraph_chain(NumVertices, NumGraphs, EdgeProbability, [G|Graphs]) :-
 	
 % vypocita seznam hran, ktere je nutne vytvorit a odstranit pro prechod
 % od G1 k G2
-ugraph_diff_to_modification(G1, G2, NumVertices, Add, Del) :-
+ugraph_diff_to_modification(G1, G2, _NumVertices, Add, Del) :-
 	ugraph_diff(G1, G2, GDel),
 	ugraph_diff(G2, G1, GAdd),
 	ugraph_to_edges(GDel, Del),
